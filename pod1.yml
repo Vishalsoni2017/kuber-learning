@@ -1,0 +1,13 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: vs
+  annotations:
+    name: vishal
+    job: devops
+    cmpy: none
+spec:
+  containers:
+    - name: vs1
+      image: 'nginx'
+  restartPolicy: Never

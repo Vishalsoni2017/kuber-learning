@@ -1,0 +1,13 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: ubu
+
+spec:
+  containers:
+    - name: ubu-c
+      image: ubuntu
+      command: ['/bin/bash','-c','while true;do echo "hi vishal";done;']
+      env:
+        - name: env
+          value: dev

@@ -1,0 +1,60 @@
+Kubernetes 
+
+Features
+    Orchestration
+    Autoscalling
+    Auto healing
+    loadbalacner
+    fault tolerance
+    Rollback 
+    multi platform arch
+    batch scheduling 
+
+
+    Objects in Kubernetes:
+
+    1. **Pod**: The smallest and simplest Kubernetes object. Represents a single instance of a running process in your cluster.
+    2. **Service**: An abstraction that defines a logical set of Pods and a policy to access them.
+    3. **Deployment**: Manages the deployment and scaling of a set of Pods.
+    4. **ConfigMap**: Stores configuration data in key-value pairs.
+    5. **Secret**: Stores sensitive information, such as passwords or tokens.
+    6. **PersistentVolume (PV)**: Represents storage in the cluster.
+    7. **PersistentVolumeClaim (PVC)**: A request for storage by a user.
+    8. **Namespace**: Provides a way to divide cluster resources between multiple users.
+    9. **Ingress**: Manages external access to services, typically HTTP.
+    10. **StatefulSet**: Manages stateful applications.
+    11. **DaemonSet**: Ensures that a copy of a Pod runs on all (or some) nodes.
+    12. **Job**: Creates one or more Pods to perform a specific task and ensures they complete successfully.
+    13. **CronJob**: Manages time-based jobs, similar to a cron scheduler.
+    14. Replicaset ,replicacontroller
+
+object ->
+    specification desrired state
+    object status
+
+
+imperative cmds
+    signle line
+
+decleartive cmds 
+    yaml file
+
+
+continaer in pods are deployed on all or nothing manner
+
+
+
+
+
+    Label: A key-value pair attached to Kubernetes objects (like pods) to organize and select them. Labels are used to identify attributes of objects.
+
+    Selector: A query or filter used to select Kubernetes objects based on their labels. Selectors help in grouping and managing resources efficiently.
+
+    equality based selector = , !=
+    set based env in (dev, qa), notin
+
+
+
+
+
+

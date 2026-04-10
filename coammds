@@ -1,0 +1,10 @@
+kubectl get nods
+kubectl get pods
+kubectl describe pods pod_name
+kubectl get pods -o wide
+kubectl apply -f pod.yaml
+kubectl delete pod pod_name/file.yaml
+kubectl logs -f pod_name -c c_name 
+kubectl exec pod_name -itc c_name -- bash
+
+

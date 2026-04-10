@@ -1,0 +1,21 @@
+Kubernetes architecture consists of the following key components:
+
+1. **Master Node**: Controls and manages the cluster.
+    - **API Server**: Handles communication between users and the cluster.
+    - **Scheduler**: Assigns workloads to worker nodes.
+    - **Controller Manager**: Ensures the desired state of the cluster.
+    - **etcd**: A key-value store for cluster data. using kubelet
+    - **kubectl** : cmd line to interact with api server
+
+2. **Worker Nodes**: Run the applications.
+    - **Kubelet**: Ensures containers are running as expected.
+    - **Kube-proxy**: Manages networking for pods.
+    - **Container Runtime**: Runs containers (e.g., Docker, containerd).
+
+3. **Pods**: The smallest deployable unit, containing one or more containers.
+
+4. **Services**: Expose applications to the network.
+
+5. **Namespaces**: Logical partitions for resources.
+
+

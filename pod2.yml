@@ -1,0 +1,22 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: vs2
+  annotations:
+    purpose: multi-containers
+
+spec:
+  containers:
+    - name: vs2-1
+      image: 'nginx'
+      env:
+        - name: env
+          value: dev
+
+        - name: env2
+          value: prod
+  
+    - name: vs2-2
+      image: 'httpd'
+  
+  restartPolicy: Never
