@@ -1,0 +1,13 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: ssd
+
+spec:
+  containers:
+    - name: ssd-1
+      image: nginx
+  nodeSelector:
+      disktype: ssd
+
+  restartPolicy: Never

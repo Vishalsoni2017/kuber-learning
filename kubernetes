@@ -54,7 +54,449 @@ continaer in pods are deployed on all or nothing manner
     set based env in (dev, qa), notin
 
 
+node selector //k8 selector     
+Node Selector: A simple mechanism to constrain Pods to run on specific nodes. It uses the `nodeSelector` field in the Pod specification to match node labels.
 
 
+Node Selector is used to schedule Pods on specific nodes based on labels.
 
+### Node Selector Example
+
+
+#### Example YAML for Node Selector:
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+    name: nginx-pod
+spec:
+    containers:
+    - name: nginx
+        image: nginx
+    nodeSelector:
+        disktype: ssd
+```
+
+#### Explanation:
+- `nodeSelector`: Specifies the key-value pair (`disktype: ssd`) to match node labels.
+- The Pod will only be scheduled on nodes with the label `disktype=ssd`.
+
+#### Adding Labels to Nodes:
+To add a label to a node, use the following command:
+```bash
+kubectl label nodes <node-name> disktype=ssd
+```
+
+Replace `<node-name>` with the name of your node.
+
+
+Replication Controller
+### Replication Controller
+
+A **Replication Controller** ensures that a specified number of pod replicas are running at any given time. If a pod fails or is deleted, the Replication Controller creates a new pod to maintain the desired state.
+
+#### Example YAML for Replication Controller:
+
+```yaml
+apiVersion: v1
+kind: ReplicationController
+metadata:
+    name: nginx-controller
+spec:
+    replicas: 3
+    selector:
+        app: nginx
+    template:
+        metadata:
+            labels:
+                app: nginx
+        spec:
+            containers:
+            - name: nginx
+                image: nginx:1.14.2
+                ports:
+                - containerPort: 80
+```
+
+#### Explanation:
+- `replicas`: Specifies the desired number of pod replicas.
+- `selector`: Matches the pods managed by the Replication Controller.
+- `template`: Defines the pod's configuration, including metadata and container specifications.
+
+#### Key Points:
+- Ensures the desired number of replicas are always running.
+- Automatically replaces failed or deleted pods.
+- Useful for maintaining high availability.
+
+#### Commands:
+To create the Replication Controller:
+```bash
+kubectl apply -f <file-name>.yaml
+```
+
+To view the Replication Controller:
+```bash
+kubectl get replicationcontroller
+```
+
+Replace `<file-name>` with the name of your YAML file.
+
+ReplicationSet
+A ReplicaSet is like an upgraded version of a Replication Controller. It ensures that a specific number of pod replicas are running at all times, just like a Replication Controller. However, the key difference is that a ReplicaSet supports label selectors with set-based matching, which makes it more flexible.
+
+Example YAML for ReplicaSet:
+Key Points:
+    selector.matchLabels: Matches pods based on labels, ensuring the ReplicaSet manages the correct pods.
+    template: Defines the pod's configuration, including metadata and container specs.
+    Automatically replaces failed or deleted pods to maintain the desired state.
+
+    Replication Controller (RC) vs ReplicaSet (RS)
+    Feature	Replication Controller (RC)	                                ReplicaSet (RS)
+    Purpose	Ensures ``a specific number of pods are running.	            Same purpose as RC.
+    Selector Type	    Only supports equality-based selectors.	    Supports both equality-based and set-based selectors.
+    Flexibility	    Less flexible due to limited selector options.	    More flexible with advanced label matching.
+    Usage	        Older and less commonly used now.	                Preferred for new deployments.
+    Integration	        Not used by Deployments.	                    Used by Deployments to manage pods.
+Summary:
+Use ReplicaSet for modern Kubernetes workloads.
+Replication Controllers are older and mostly replaced by ReplicaSets or Deployments.
+
+deployment 
+### Deployment
+
+A **Deployment** in Kubernetes provides declarative updates for Pods and ReplicaSets. It is used to manage the desired state of your application, including scaling, rolling updates, and rollbacks.
+
+#### Example YAML for Deployment:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: nginx-deployment
+spec:
+    replicas: 3
+    selector:
+        matchLabels:
+            app: nginx
+    template:
+        metadata:
+            labels:
+                app: nginx
+        spec:
+            containers:
+            - name: nginx
+                image: nginx:1.14.2
+                ports:
+                - containerPort: 80
+```
+
+#### Explanation:
+- `replicas`: Specifies the desired number of pod replicas.
+- `selector.matchLabels`: Matches the pods managed by the Deployment.
+- `template`: Defines the pod's configuration, including metadata and container specifications.
+- `image`: Specifies the container image to use.
+
+#### Key Points:
+- Supports rolling updates to ensure zero downtime during updates.
+- Allows rollbacks to previous versions if needed.
+- Manages ReplicaSets to ensure the desired state of Pods.
+
+#### Commands:
+To create the Deployment:
+```bash
+kubectl apply -f <file-name>.yaml
+```
+
+To view the Deployment:
+```bash
+kubectl get deployments
+```
+
+To scale the Deployment:
+```bash
+kubectl scale deployment nginx-deployment --replicas=5
+```
+
+To update the Deployment:
+```bash
+kubectl set image deployment/nginx-deployment nginx=nginx:1.16.0
+```
+
+Replace `<file-name>` with the name of your YAML file.
+
+
+StatefullSet
+### StatefulSet
+
+A **StatefulSet** is a Kubernetes workload API object used to manage stateful applications. Unlike Deployments, StatefulSets are designed for applications that require stable network identities and persistent storage.
+
+#### Example YAML for StatefulSet:
+
+```yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+    name: web
+spec:
+    serviceName: "web"
+    replicas: 3
+    selector:
+        matchLabels:
+            app: web
+    template:
+        metadata:
+            labels:
+                app: web
+        spec:
+            containers:
+            - name: nginx
+                image: nginx:1.14.2
+                ports:
+                - containerPort: 80
+    volumeClaimTemplates:
+    - metadata:
+          name: web-storage
+      spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+              requests:
+                  storage: 1Gi
+```
+
+#### Explanation:
+- `serviceName`: Specifies the headless service name for network identity.
+- `replicas`: Defines the desired number of pod replicas.
+- `volumeClaimTemplates`: Requests persistent storage for each pod.
+- Pods are created with unique, stable names (e.g., `web-0`, `web-1`, `web-2`).
+
+#### Key Points:
+- Ensures stable network identities for pods.
+- Maintains persistent storage for each pod using `PersistentVolumeClaims`.
+- Pods are created and terminated in a specific order.
+
+---
+
+### StatefulSet vs Deployment
+
+| Feature                     | StatefulSet                              | Deployment                              |
+|-----------------------------|------------------------------------------|-----------------------------------------|
+| Purpose                     | Manages stateful applications.           | Manages stateless applications.         |
+| Pod Identity                | Stable, unique network identity.         | Random pod names.                       |
+| Storage                     | Persistent storage per pod.              | Shared or no storage.                   |
+| Scaling                     | Sequential scaling (one pod at a time).  | Parallel scaling.                       |
+| Use Case                    | Databases, distributed systems.          | Web servers, stateless apps.            |
+
+#### Summary:
+- Use **StatefulSet** for stateful applications requiring stable identities and persistent storage.
+- Use **Deployment** for stateless applications with no dependency on pod identity or storage.
+
+Networking in k8
+### Networking in Kubernetes
+
+Kubernetes networking enables communication between containers, Pods, and external systems. It ensures that all Pods can communicate with each other without NAT (Network Address Translation).
+
+#### Key Concepts:
+1. **Pod-to-Pod Communication**: Pods communicate using their IP addresses.
+2. **Container-to-Container Communication**: Containers within the same Pod communicate via `localhost`.
+3. **Pod-to-Service Communication**: Services provide stable endpoints for Pods, enabling communication even if Pod IPs change.
+
+---
+
+### Examples of Communication
+
+#### 1. **Container-to-Container Communication**
+Containers in the same Pod share the same network namespace and can communicate using `localhost`.
+
+Example:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+    name: multi-container-pod
+spec:
+    containers:
+    - name: app-container
+        image: nginx
+    - name: sidecar-container
+        image: busybox
+        command: ["sh", "-c", "echo Hello from sidecar; sleep 3600"]
+```
+- Both containers can communicate using `localhost` and their respective ports.
+
+---
+
+#### 2. **Pod-to-Pod Communication**
+Pods communicate using their IP addresses. Kubernetes assigns a unique IP to each Pod.
+
+Example:
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+    name: pod-a
+spec:
+    containers:
+    - name: nginx
+        image: nginx
+---
+apiVersion: v1
+kind: Pod
+metadata:
+    name: pod-b
+spec:
+    containers:
+    - name: busybox
+        image: busybox
+        command: ["sh", "-c", "ping pod-a; sleep 3600"]
+```
+- `pod-b` can ping `pod-a` using its IP address.
+
+---
+
+#### 3. **Pod-to-Service Communication**
+Services provide a stable IP and DNS name for Pods, enabling communication even if Pod IPs change.
+
+Example:
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+    name: my-service
+spec:
+    selector:
+        app: my-app
+    ports:
+    - protocol: TCP
+        port: 80
+        targetPort: 8080
+---
+apiVersion: v1
+kind: Pod
+metadata:
+    name: my-app-pod
+    labels:
+        app: my-app
+spec:
+    containers:
+    - name: app-container
+        image: nginx
+        ports:
+        - containerPort: 8080
+```
+- Other Pods can access `my-app-pod` using `my-service`'s DNS name or ClusterIP.
+
+---
+
+### Summary of Communication
+
+| Communication Type         | Method                     | Example                              |
+|----------------------------|----------------------------|--------------------------------------|
+| Container-to-Container     | `localhost`               | Multi-container Pod                 |
+| Pod-to-Pod                 | Pod IP                    | Direct Pod communication            |
+| Pod-to-Service             | Service IP or DNS         | Access via Service abstraction      |
+
+Kubernetes networking ensures seamless communication between components, enabling scalable and reliable application deployments.
+
+pod have ip
+within pods ->localhost
+
+pod to pod -> pod ip 
+
+node pod to node pod -> pod ip
+
+
+Service and Types
+### Services and Their Types in Kubernetes
+
+A **Service** in Kubernetes is an abstraction that provides a stable endpoint (IP and DNS) to access a set of Pods. Services enable communication between Pods and external systems, even if Pod IPs change.
+
+#### Types of Services:
+
+1. **ClusterIP (Default)**:
+    - Exposes the Service within the cluster.
+    - Pods inside the cluster can access the Service using its ClusterIP.
+    - Not accessible from outside the cluster.
+
+    Example:
+    ```yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+         name: clusterip-service
+    spec:
+         selector:
+              app: my-app
+         ports:
+         - protocol: TCP
+            port: 80
+            targetPort: 8080
+    ```
+
+2. **NodePort**:
+    - Exposes the Service on a static port on each Node.
+    - Accessible from outside the cluster using `<NodeIP>:<NodePort>`.
+
+    Example:
+    ```yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+         name: nodeport-service
+    spec:
+         type: NodePort
+         selector:
+              app: my-app
+         ports:
+         - protocol: TCP
+            port: 80
+            targetPort: 8080
+            nodePort: 30007
+    ```
+
+3. **LoadBalancer**:
+    - Exposes the Service externally using a cloud provider's load balancer.
+    - Automatically provisions an external IP or DNS.
+
+    Example:
+    ```yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+         name: loadbalancer-service
+    spec:
+         type: LoadBalancer
+         selector:
+              app: my-app
+         ports:
+         - protocol: TCP
+            port: 80
+            targetPort: 8080
+    ```
+
+4. **ExternalName**:
+    - Maps the Service to an external DNS name.
+    - Used for services outside the cluster.
+
+    Example:
+    ```yaml
+    apiVersion: v1
+    kind: Service
+    metadata:
+         name: externalname-service
+    spec:
+         type: ExternalName
+         externalName: example.com
+    ```
+
+#### Summary of Service Types:
+
+| Service Type   | Accessibility                     | Use Case                              |
+|----------------|-----------------------------------|---------------------------------------|
+| ClusterIP      | Internal cluster communication    | Default, internal-only services.      |
+| NodePort       | External access via Node IP       | Expose services on specific ports.    |
+| LoadBalancer   | External access via load balancer | Cloud-based external services.        |
+| ExternalName   | Maps to external DNS name         | Access external resources.            |
+
+Services in Kubernetes provide a robust way to manage communication between Pods and external systems, ensuring scalability and reliability.
 

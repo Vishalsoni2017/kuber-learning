@@ -1,0 +1,15 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: vs2
+  annotations:
+    name: vishal
+  labels:
+    env: dev
+    arch: front
+
+spec:
+  containers:
+    - name: ubu
+      image: ubuntu
+      command: ['/bin/bash','-c','while true; do echo "hi";done;']

@@ -1,0 +1,24 @@
+kind: ReplicaSet
+apiVersion: apps/v1
+metadata:
+  name: rs
+
+spec:
+  replicas: 3
+  selector:
+    matchExpressions:
+      - {key: env, operator: In, values: [dev, uat]}
+      - {key: domain, operator: NotIn, values: [cloud, health]}
+  
+  template:
+    metadata:
+      name: rs-pod
+      labels:
+        env: dev
+        doamin: tech
+    spec:
+      containers: 
+        - name: pod
+          image: nginx
+      nodeSelector:
+        env: dev

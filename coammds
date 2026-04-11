@@ -6,5 +6,26 @@ kubectl apply -f pod.yaml
 kubectl delete pod pod_name/file.yaml
 kubectl logs -f pod_name -c c_name 
 kubectl exec pod_name -itc c_name -- bash
+kubectl get pod pod_name --show-labels
+kubectl label pod pod_name name=vishal // to add label
+kubectl label pod pod_name name- // to remove the label
+kubectl get pod -l env=dev // to get all the pods with label env=dev
+kubectl get pod -l 'env in (dev,qa)' // to get all the pods with label env=dev or env=qa
+kubectl get pod -l 'env notin (dev,qa)' // to get all the pods with label env not dev and not qa
+kubectl label nodes node_name disktype=ssd // to add label to node
+kubectl get rc
+kubectl scale --replicas=3 rc/rc_name
+kubectl scale --replicas=3 rc -l env=dev
+k get rs
+kubectl get deploy
+kubectl rollout status deploy deploy_name
+kubectl rollout history deploy deploy_name 
+kubectl rollout undo deploy deploy_name --to-revision=2 // to rollback to a specific revision 
+kubectl get deploy -o wide
 
+kubectl set image deployment/nginx-deployment nginx=nginx:1.16.0
 
+kubectl get svc // to get all the services
+kubectl describe svc svc_name
+
+kubectl port-forward --address 0.0.0.0 svc/svc_name 8080:80 // to forward port 80 of the service to local port 8080

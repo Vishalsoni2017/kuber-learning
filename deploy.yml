@@ -1,0 +1,21 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: deply-ubu
+
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      os: ubuntu
+
+  template:
+    metadata: 
+      name: ubu-pod
+      labels:
+        os: ubuntu
+    spec:
+      containers:
+        - name: ubunut
+          image: ubuntu
+          command: ['/bin/bash','-c','while true; do echo "vishal v-3";done;']

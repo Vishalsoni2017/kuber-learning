@@ -1,0 +1,24 @@
+kind: ReplicationController
+apiVersion: v1
+metadata:
+  name: nginx-controller
+
+spec:
+
+  replicas: 3
+  selector: 
+    app: webserver
+
+
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+         app: webserver
+
+    spec:
+      containers:
+        - name: nginx-c
+          image: nginx
+      nodeSelector:
+        disktype: ssd
