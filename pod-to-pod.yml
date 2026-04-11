@@ -1,0 +1,15 @@
+kind: Pod
+apiVersion: v1
+metadata:
+    name: vs-spod
+spec:
+    containers:
+        -   name: pod-1
+            image: ubuntu
+            command: ["/bin/bash","-c","while true;do echo 'hi';done"]
+
+        -   name: pod-2
+            image: nginx
+
+
+localhost -communication
