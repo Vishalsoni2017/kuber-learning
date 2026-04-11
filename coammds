@@ -29,3 +29,11 @@ kubectl get svc // to get all the services
 kubectl describe svc svc_name
 
 kubectl port-forward --address 0.0.0.0 svc/svc_name 8080:80 // to forward port 80 of the service to local port 8080
+
+
+kubectl create namespace ns_name // to create a namespace
+kubectl create ns ns_name // to create a namespace
+kubectl get ns // to get all the namespaces
+kubectl get pods -n ns_name // to get all the pods in a specific namespace
+kubectl apply -f pod.yaml -n ns_name // to create a pod in a specific namespace
+
