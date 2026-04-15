@@ -36,4 +36,8 @@ kubectl create ns ns_name // to create a namespace
 kubectl get ns // to get all the namespaces
 kubectl get pods -n ns_name // to get all the pods in a specific namespace
 kubectl apply -f pod.yaml -n ns_name // to create a pod in a specific namespace
+kubectl get pod -w
+ctr -n k8s.io images import mlopsimage.tar
+docker save mlopsimage:latest -o mlopsimage.tar
+crictl images
 
