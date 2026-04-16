@@ -1,3 +1,13 @@
+k config view
+k config current-context
+k config get-context
+k config get-contexts
+kubectl config get-contexts staging 
+    
+kubectl config set-context <context-name> --namespace=<namespace-name> --user=<user-name> --cluster=<cluster-name> 
+kubectl config use-context <context-name> 
+kubectl config delete-context <context-name> 
+
 kubectl get nods
 kubectl get pods
 kubectl describe pods pod_name
